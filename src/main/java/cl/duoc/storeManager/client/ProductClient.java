@@ -6,7 +6,6 @@
  */
 package cl.duoc.storeManager.client;
 
-import cl.duoc.storeManager.config.WebClientConfigStoreManager;
 import cl.duoc.storeManager.dto.response.ProductResponseDto;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,7 @@ import reactor.core.publisher.Mono;
 @Component
 @RequiredArgsConstructor
 public class ProductClient {
-    private final WebClientConfigStoreManager productWebClient;
+    private final WebClient productWebClient;
 
     public List<ProductResponseDto> getAllProducts() {
         ProductResponseDto[] products = productWebClient
