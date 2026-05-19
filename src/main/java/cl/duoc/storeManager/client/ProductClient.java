@@ -7,35 +7,20 @@
 package cl.duoc.storeManager.client;
 
 import cl.duoc.storeManager.dto.response.ProductResponseDto;
-import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
 @RequiredArgsConstructor
 public class ProductClient {
-    private final WebClient productWebClient;
+    private final WebClient webClientProduct;
 
-    public List<ProductResponseDto> getAllProducts() {
-        ProductResponseDto[] products = productWebClient
+    public ProductResponseDto getProductById(Long productId) {
+        return webClientProduct
                 .get()
-                .uri("/api/v1/products")
+                .uri("/api/v1/products/{id}", productId)
                 .retrieve()
-                .bodyToMono(ProductResponseDto[].class)
-                .block();
-
-        return Arrays.asList(products);
-    }
-
-    public ProductResponseDto getProductById(Long id) {
-        return productWebClient
-                .get()
-                .uri("/api/v1/products/{id}", id)
-                .retrieve()
-                .onStatus(
-                        status -> status.value() == 404,
-                        response -> Mono.error(new ResourceNotFoundException("Producto no encontrado con id: " + id)))
                 .bodyToMono(ProductResponseDto.class)
                 .block();
     }
