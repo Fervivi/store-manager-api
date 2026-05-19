@@ -11,12 +11,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-public class WebClientConfigStoreManager {
+public class WebClientConfigCart {
 
     @Bean
-    public WebClient productWebClient() {
+    public WebClient webClientCart() {
         return WebClient.builder()
-                .baseUrl("http://localhost:8084")
+                .baseUrl("http://localhost:8085")
                 .defaultHeader("Content-Type", "application/json")
                 .build();
     }
