@@ -7,7 +7,6 @@
 package cl.duoc.storeManager.security;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,18 +20,45 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @Value("${jwt.public}")
-    private String[] publicPaths;
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth.requestMatchers(publicPaths)
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+
+            // Puede lanzar excepción
+            throws Exception {
+
+        // Retorna configuración final de seguridad
+        return http
+
+                // Desactiva protección CSRF
+                .csrf(csrf -> csrf.disable())
+
+                // Configura aplicación Stateless
+                .sessionManagement(session ->
+
+                        // No crear sesiones HTTP
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // Configura reglas de autorización
+                .authorizeHttpRequests(auth -> auth
+
+                        // Permite acceso público
+                        .requestMatchers("/api/v1/public/**")
                         .permitAll()
+
+                        // Cualquier otro endpoint requiere autenticación
                         .anyRequest()
                         .authenticated())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+
+                // Agrega JwtAuthenticationFilter antes del filtro estándar
+                .addFilterBefore(
+
+                        // Nuestro filtro JWT personalizado
+                        jwtAuthenticationFilter,
+
+                        // Antes del filtro default Spring
+                        UsernamePasswordAuthenticationFilter.class)
+
+                // Construye configuración final
                 .build();
     }
 }
