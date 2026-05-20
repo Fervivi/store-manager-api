@@ -8,7 +8,6 @@ package cl.duoc.storeManager.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,13 +44,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
-
-            DecodedJWT decodedJWT =
-                    JWT.require(algorithm).withIssuer(jwtIssuer).build().verify(token);
+            WT decodedJWT = JWT.require(algorithm).withIssuer(jwtIssuer).build().verify(token);
 
             String username = decodedJWT.getSubject();
-
-            UsernamePasswordAuthenticationToken authentication =
+            PasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
