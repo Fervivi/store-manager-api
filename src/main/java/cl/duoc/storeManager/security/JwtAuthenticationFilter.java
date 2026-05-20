@@ -8,6 +8,7 @@ package cl.duoc.storeManager.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,6 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+
             filterChain.doFilter(request, response);
             return;
         }
@@ -43,19 +45,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = authorizationHeader.replace("Bearer ", "");
 
         try {
+
             Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
-            WT decodedJWT = JWT.require(algorithm).withIssuer(jwtIssuer).build().verify(token);
+
+            DecodedJWT decodedJWT =
+                    JWT.require(algorithm).withIssuer(jwtIssuer).build().verify(token);
 
             String username = decodedJWT.getSubject();
-            PasswordAuthenticationToken authentication =
+
+            UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
         } catch (Exception ex) {
+
             SecurityContextHolder.clearContext();
+
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
             response.getWriter().write("Token inválido o expirado");
+
             return;
         }
 
