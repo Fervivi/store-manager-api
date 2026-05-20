@@ -14,9 +14,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.List;
+import org.hibernate.mapping.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -24,51 +26,45 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private final String BEARER = "Bearer ";
+
     @Value("${jwt.secret}")
-    private String jwtSecret;
+    private String secret;
 
     @Value("${jwt.issuer}")
-    private String jwtIssuer;
+    private String issuer;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filter)
             throws ServletException, IOException {
-
-        String authorizationHeader = request.getHeader("Authorization");
-
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-
-            filterChain.doFilter(request, response);
+        String header = req.getHeader("Authorization");
+        if (header == null || !header.startsWith(BEARER)) {
+            filter.doFilter(req, res);
             return;
         }
-
-        String token = authorizationHeader.replace("Bearer ", "");
 
         try {
+            String token = header.substring(BEARER.length());
+            DecodedJWT jwt = JWT.require(Algorithm.HMAC256(secret))
+                    .withIssuer(issuer)
+                    .build()
+                    .verify(token);
+            String username = jwt.getSubject();
+            List<String> roles = jwt.getClaim("roles").asList(String.class);
+            roles = roles != null ? roles : List.of();
+            List<SimpleGrantedAuthority> authorities = (roles == null)
+                    ? List.of()
+                    : roles.stream().map(SimpleGrantedAuthority::new).toList();
+            UsernamePasswordAuthenticationToken auth =
+                    new UsernamePasswordAuthenticationToken(username, null, authorities);
 
-            Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
+            SecurityContextHolder.getContext().setAuthentication(auth);
 
-            DecodedJWT decodedJWT =
-                    JWT.require(algorithm).withIssuer(jwtIssuer).build().verify(token);
-
-            String username = decodedJWT.getSubject();
-
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        } catch (Exception ex) {
-
-            SecurityContextHolder.clearContext();
-
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-
-            response.getWriter().write("Token inválido o expirado");
-
+        } catch (Exception err) {
+            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        filterChain.doFilter(request, response);
+        filter.doFilter(req, res);
     }
 }
