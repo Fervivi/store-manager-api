@@ -28,6 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class StoreManagerController {
     private final StoreManagerService storeManagerService;
 
+    @GetMapping("/test")
+    public String getMethodName() {
+        return "Ok";
+    }
+
     @PostMapping("/cart/products")
     public CartResponseDto addProductToCart(@RequestBody AddProductToCartRequestDto request) {
         return storeManagerService.addProductToCart(request);
