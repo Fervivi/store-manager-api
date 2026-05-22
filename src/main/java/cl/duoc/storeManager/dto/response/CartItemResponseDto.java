@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CartItemResponseDto {
 
-    private Long productId;
-    private Integer cantidad;
+    private Long id;
+    private Long product;
+    private Integer quantity;
+    private Integer price;
 }
