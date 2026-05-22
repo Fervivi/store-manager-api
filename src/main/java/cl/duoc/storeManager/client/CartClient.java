@@ -6,7 +6,7 @@
  */
 package cl.duoc.storeManager.client;
 
-import cl.duoc.storeManager.dto.request.AddProductToCartRequestDto;
+import cl.duoc.storeManager.dto.request.CartItemRequestDto;
 import cl.duoc.storeManager.dto.response.CartResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -18,10 +18,10 @@ public class CartClient {
 
     private final WebClient webClientCart;
 
-    public CartResponseDto addProductToCart(AddProductToCartRequestDto request) {
+    public CartResponseDto addItemToCart(Long cartId, CartItemRequestDto request) {
         return webClientCart
                 .post()
-                .uri("/api/v1/carts/{cartId}/products", request.getCartId())
+                .uri("/api/v1/carts/{cartId}/items", cartId)
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(CartResponseDto.class)
@@ -37,21 +37,22 @@ public class CartClient {
                 .block();
     }
 
-    public CartResponseDto updateProductQuantity(Long cartId, Long productId, Integer cantidad) {
+    public CartResponseDto updateItem(Long cartId, Long itemId, CartItemRequestDto request) {
         return webClientCart
                 .put()
-                .uri("/api/v1/carts/{cartId}/products/{productId}?cantidad={cantidad}", cartId, productId, cantidad)
+                .uri("/api/v1/carts/{cartId}/items/{itemId}", cartId, itemId)
+                .bodyValue(request)
                 .retrieve()
                 .bodyToMono(CartResponseDto.class)
                 .block();
     }
 
-    public void removeProductFromCart(Long cartId, Long productId) {
-        webClientCart
+    public CartResponseDto removeItemFromCart(Long cartId, Long itemId) {
+        return webClientCart
                 .delete()
-                .uri("/api/v1/carts/{cartId}/products/{productId}", cartId, productId)
+                .uri("/api/v1/carts/{cartId}/items/{itemId}", cartId, itemId)
                 .retrieve()
-                .bodyToMono(Void.class)
+                .bodyToMono(CartResponseDto.class)
                 .block();
     }
 }
