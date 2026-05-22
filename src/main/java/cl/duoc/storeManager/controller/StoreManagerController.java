@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/store")
+@RequestMapping("/api/vi/store")
 @RequiredArgsConstructor
 public class StoreManagerController {
     private final StoreManagerService storeManagerService;
