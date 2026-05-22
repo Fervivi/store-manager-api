@@ -9,6 +9,7 @@ package cl.duoc.storeManager.service;
 import cl.duoc.storeManager.client.CartClient;
 import cl.duoc.storeManager.client.ProductClient;
 import cl.duoc.storeManager.dto.request.AddProductToCartRequestDto;
+import cl.duoc.storeManager.dto.request.CartItemRequestDto;
 import cl.duoc.storeManager.dto.response.CartResponseDto;
 import cl.duoc.storeManager.dto.response.ProductResponseDto;
 import cl.duoc.storeManager.dto.response.StoreCartResponseDto;
@@ -41,7 +42,12 @@ public class StoreManagerService {
             throw new IllegalArgumentException("Stock insuficiente para el producto: " + product.getNombre());
         }
 
-        return cartClient.addProductToCart(request);
+        CartItemRequestDto cartRequest = new CartItemRequestDto(
+                request.getProductId(),
+                request.getCantidad(),
+                product.getPrecio().intValue());
+
+        return cartClient.addItemToCart(request.getCartId(), cartRequest);
     }
 
     public List<StoreCartResponseDto> getCartWithProductDetails(Long cartId) {
@@ -54,17 +60,17 @@ public class StoreManagerService {
 
         return cart.getItems().stream()
                 .map(item -> {
-                    ProductResponseDto product = productClient.getProductById(item.getProductId());
+                    ProductResponseDto product = productClient.getProductById(item.getProduct());
 
-                    BigDecimal subtotal = product.getPrecio().multiply(BigDecimal.valueOf(item.getCantidad()));
+                    BigDecimal subtotal = product.getPrecio().multiply(BigDecimal.valueOf(item.getQuantity()));
 
                     return new StoreCartResponseDto(
-                            product.getId(), product.getNombre(), item.getCantidad(), product.getPrecio(), subtotal);
+                            product.getId(), product.getNombre(), item.getQuantity(), product.getPrecio(), subtotal);
                 })
                 .toList();
     }
 
-    public CartResponseDto updateProductQuantity(Long cartId, Long productId, Integer cantidad) {
+    public CartResponseDto updateItemQuantity(Long cartId, Long itemId, Long productId, Integer cantidad) {
 
         ProductResponseDto product = productClient.getProductById(productId);
 
@@ -72,14 +78,21 @@ public class StoreManagerService {
             throw new ResourceNotFoundException("Producto no encontrado con ID: " + productId);
         }
 
+        if (!Boolean.TRUE.equals(product.getActivo())) {
+            throw new IllegalArgumentException("El producto no está activo");
+        }
+
         if (product.getStock() < cantidad) {
             throw new IllegalArgumentException("Stock insuficiente para el producto: " + product.getNombre());
         }
 
-        return cartClient.updateProductQuantity(cartId, productId, cantidad);
+        CartItemRequestDto cartRequest =
+                new CartItemRequestDto(productId, cantidad, product.getPrecio().intValue());
+
+        return cartClient.updateItem(cartId, itemId, cartRequest);
     }
 
-    public void removeProductFromCart(Long cartId, Long productId) {
-        cartClient.removeProductFromCart(cartId, productId);
+    public CartResponseDto removeItemFromCart(Long cartId, Long itemId) {
+        return cartClient.removeItemFromCart(cartId, itemId);
     }
 }
