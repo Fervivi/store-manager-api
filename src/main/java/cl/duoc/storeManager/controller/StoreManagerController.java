@@ -28,9 +28,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class StoreManagerController {
     private final StoreManagerService storeManagerService;
 
-    @GetMapping("/test")
-    public String getMethodName() {
-        return "Ok";
+    @GetMapping("/health")
+    public String health() {
+        return "StoreManager funcionando correctamente";
     }
 
     @PostMapping("/cart/products")
@@ -43,14 +43,19 @@ public class StoreManagerController {
         return storeManagerService.getCartWithProductDetails(cartId);
     }
 
-    @PutMapping("/cart/{cartId}/products/{productId}")
-    public CartResponseDto updateProductQuantity(
-            @PathVariable Long cartId, @PathVariable Long productId, @RequestParam Integer cantidad) {
-        return storeManagerService.updateProductQuantity(cartId, productId, cantidad);
+    @PutMapping("/cart/{cartId}/items/{itemId}")
+    public CartResponseDto updateItemQuantity(
+            @PathVariable Long cartId,
+            @PathVariable Long itemId,
+            @RequestParam Long productId,
+            @RequestParam Integer cantidad) {
+
+        return storeManagerService.updateItemQuantity(cartId, itemId, productId, cantidad);
     }
 
-    @DeleteMapping("/cart/{cartId}/products/{productId}")
-    public void removeProductFromCart(@PathVariable Long cartId, @PathVariable Long productId) {
-        storeManagerService.removeProductFromCart(cartId, productId);
+    @DeleteMapping("/cart/{cartId}/items/{itemId}")
+    public CartResponseDto removeItemFromCart(@PathVariable Long cartId, @PathVariable Long itemId) {
+
+        return storeManagerService.removeItemFromCart(cartId, itemId);
     }
 }
