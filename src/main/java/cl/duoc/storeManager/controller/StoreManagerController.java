@@ -10,7 +10,6 @@ import cl.duoc.storeManager.dto.request.AddProductToCartRequestDto;
 import cl.duoc.storeManager.dto.response.CartResponseDto;
 import cl.duoc.storeManager.dto.response.StoreCartResponseDto;
 import cl.duoc.storeManager.service.StoreManagerService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,12 +17,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/vi/store")
+@RequestMapping("/api/v1/store")
 @RequiredArgsConstructor
 public class StoreManagerController {
     private final StoreManagerService storeManagerService;
@@ -34,28 +35,34 @@ public class StoreManagerController {
     }
 
     @PostMapping("/cart/products")
-    public CartResponseDto addProductToCart(@RequestBody AddProductToCartRequestDto request) {
-        return storeManagerService.addProductToCart(request);
+    public CartResponseDto addProductToCart(
+            @RequestHeader("Authorization") String token, @RequestBody AddProductToCartRequestDto request) {
+
+        return storeManagerService.addProductToCart(request, token);
     }
 
     @GetMapping("/cart/{cartId}")
-    public List<StoreCartResponseDto> getCartWithProductDetails(@PathVariable Long cartId) {
-        return storeManagerService.getCartWithProductDetails(cartId);
+    public List<StoreCartResponseDto> getCartWithProductDetails(
+            @RequestHeader("Authorization") String token, @PathVariable Long cartId) {
+
+        return storeManagerService.getCartWithProductDetails(cartId, token);
     }
 
     @PutMapping("/cart/{cartId}/items/{itemId}")
     public CartResponseDto updateItemQuantity(
+            @RequestHeader("Authorization") String token,
             @PathVariable Long cartId,
             @PathVariable Long itemId,
             @RequestParam Long productId,
             @RequestParam Integer cantidad) {
 
-        return storeManagerService.updateItemQuantity(cartId, itemId, productId, cantidad);
+        return storeManagerService.updateItemQuantity(cartId, itemId, productId, cantidad, token);
     }
 
     @DeleteMapping("/cart/{cartId}/items/{itemId}")
-    public CartResponseDto removeItemFromCart(@PathVariable Long cartId, @PathVariable Long itemId) {
+    public CartResponseDto removeItemFromCart(
+            @RequestHeader("Authorization") String token, @PathVariable Long cartId, @PathVariable Long itemId) {
 
-        return storeManagerService.removeItemFromCart(cartId, itemId);
+        return storeManagerService.removeItemFromCart(cartId, itemId, token);
     }
 }

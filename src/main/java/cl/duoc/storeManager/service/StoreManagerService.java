@@ -26,9 +26,9 @@ public class StoreManagerService {
     private final ProductClient productClient;
     private final CartClient cartClient;
 
-    public CartResponseDto addProductToCart(AddProductToCartRequestDto request) {
+    public CartResponseDto addProductToCart(AddProductToCartRequestDto request, String token) {
 
-        ProductResponseDto product = productClient.getProductById(request.getProductId());
+        ProductResponseDto product = productClient.getProductById(request.getProductId(), token);
 
         if (product == null) {
             throw new ResourceNotFoundException("Producto no encontrado con ID: " + request.getProductId());
@@ -47,12 +47,12 @@ public class StoreManagerService {
                 request.getCantidad(),
                 product.getPrecio().intValue());
 
-        return cartClient.addItemToCart(request.getCartId(), cartRequest);
+        return cartClient.addItemToCart(request.getCartId(), cartRequest, token);
     }
 
-    public List<StoreCartResponseDto> getCartWithProductDetails(Long cartId) {
+    public List<StoreCartResponseDto> getCartWithProductDetails(Long cartId, String token) {
 
-        CartResponseDto cart = cartClient.getCartById(cartId);
+        CartResponseDto cart = cartClient.getCartById(cartId, token);
 
         if (cart == null) {
             throw new ResourceNotFoundException("Carrito no encontrado con ID: " + cartId);
@@ -60,7 +60,7 @@ public class StoreManagerService {
 
         return cart.getItems().stream()
                 .map(item -> {
-                    ProductResponseDto product = productClient.getProductById(item.getProduct());
+                    ProductResponseDto product = productClient.getProductById(item.getProduct(), token);
 
                     BigDecimal subtotal = product.getPrecio().multiply(BigDecimal.valueOf(item.getQuantity()));
 
@@ -70,9 +70,10 @@ public class StoreManagerService {
                 .toList();
     }
 
-    public CartResponseDto updateItemQuantity(Long cartId, Long itemId, Long productId, Integer cantidad) {
+    public CartResponseDto updateItemQuantity(
+            Long cartId, Long itemId, Long productId, Integer cantidad, String token) {
 
-        ProductResponseDto product = productClient.getProductById(productId);
+        ProductResponseDto product = productClient.getProductById(productId, token);
 
         if (product == null) {
             throw new ResourceNotFoundException("Producto no encontrado con ID: " + productId);
@@ -89,10 +90,10 @@ public class StoreManagerService {
         CartItemRequestDto cartRequest =
                 new CartItemRequestDto(productId, cantidad, product.getPrecio().intValue());
 
-        return cartClient.updateItem(cartId, itemId, cartRequest);
+        return cartClient.updateItem(cartId, itemId, cartRequest, token);
     }
 
-    public CartResponseDto removeItemFromCart(Long cartId, Long itemId) {
-        return cartClient.removeItemFromCart(cartId, itemId);
+    public CartResponseDto removeItemFromCart(Long cartId, Long itemId, String token) {
+        return cartClient.removeItemFromCart(cartId, itemId, token);
     }
 }

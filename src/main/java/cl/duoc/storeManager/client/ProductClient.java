@@ -16,10 +16,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class ProductClient {
     private final WebClient webClientProduct;
 
-    public ProductResponseDto getProductById(Long productId) {
+    public ProductResponseDto getProductById(Long productId, String token) {
         return webClientProduct
                 .get()
                 .uri("/api/v1/products/{id}", productId)
+                .header("Authorization", token)
                 .retrieve()
                 .bodyToMono(ProductResponseDto.class)
                 .block();

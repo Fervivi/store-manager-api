@@ -18,39 +18,43 @@ public class CartClient {
 
     private final WebClient webClientCart;
 
-    public CartResponseDto addItemToCart(Long cartId, CartItemRequestDto request) {
+    public CartResponseDto addItemToCart(Long cartId, CartItemRequestDto request, String token) {
         return webClientCart
                 .post()
                 .uri("/api/v1/carts/{cartId}/items", cartId)
+                .header("Authorization", token)
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(CartResponseDto.class)
                 .block();
     }
 
-    public CartResponseDto getCartById(Long cartId) {
+    public CartResponseDto getCartById(Long cartId, String token) {
         return webClientCart
                 .get()
                 .uri("/api/v1/carts/{cartId}", cartId)
+                .header("Authorization", token)
                 .retrieve()
                 .bodyToMono(CartResponseDto.class)
                 .block();
     }
 
-    public CartResponseDto updateItem(Long cartId, Long itemId, CartItemRequestDto request) {
+    public CartResponseDto updateItem(Long cartId, Long itemId, CartItemRequestDto request, String token) {
         return webClientCart
                 .put()
                 .uri("/api/v1/carts/{cartId}/items/{itemId}", cartId, itemId)
+                .header("Authorization", token)
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(CartResponseDto.class)
                 .block();
     }
 
-    public CartResponseDto removeItemFromCart(Long cartId, Long itemId) {
+    public CartResponseDto removeItemFromCart(Long cartId, Long itemId, String token) {
         return webClientCart
                 .delete()
                 .uri("/api/v1/carts/{cartId}/items/{itemId}", cartId, itemId)
+                .header("Authorization", token)
                 .retrieve()
                 .bodyToMono(CartResponseDto.class)
                 .block();
