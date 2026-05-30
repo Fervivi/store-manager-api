@@ -8,9 +8,7 @@
 	<appender name="CONSOLE"
 		class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>[%highlight(%level)] --- %green(%logger{36}) @
-				%cyan(${SPRING_APP_NAME}) ---%n%yellow(%d{yyyy-MM-dd HH:mm:ss})
-				%msg%n</pattern>
+			<pattern>[%highlight(%level)] --- %green(%logger{36}) @ %cyan(${SPRING_APP_NAME}) ---%n%yellow(%d{yyyy-MM-dd HH:mm:ss}) %msg%n</pattern>
 		</encoder>
 	</appender>
 	<appender name="JSON"
