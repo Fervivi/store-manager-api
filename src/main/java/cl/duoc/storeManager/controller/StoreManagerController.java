@@ -6,9 +6,10 @@
  */
 package cl.duoc.storeManager.controller;
 
-import cl.duoc.storeManager.dto.request.AddProductToCartRequestDto;
+import cl.duoc.storeManager.dto.request.CartCreationRequest;
+import cl.duoc.storeManager.dto.request.CartUpdateRequest;
 import cl.duoc.storeManager.dto.response.CartResponseDto;
-import cl.duoc.storeManager.dto.response.StoreCartResponseDto;
+import cl.duoc.storeManager.dto.response.ProductResponseDto;
 import cl.duoc.storeManager.service.StoreManagerService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -34,35 +34,44 @@ public class StoreManagerController {
         return "StoreManager funcionando correctamente";
     }
 
-    @PostMapping("/cart/products")
-    public CartResponseDto addProductToCart(
-            @RequestHeader("Authorization") String token, @RequestBody AddProductToCartRequestDto request) {
+    @PostMapping("/carts")
+    public CartResponseDto createCart(
+            @RequestHeader("Authorization") String token, @RequestBody CartCreationRequest request) {
 
-        return storeManagerService.addProductToCart(request, token);
+        return storeManagerService.createCart(request, token);
     }
 
-    @GetMapping("/cart/{cartId}")
-    public List<StoreCartResponseDto> getCartWithProductDetails(
-            @RequestHeader("Authorization") String token, @PathVariable Long cartId) {
+    @GetMapping("/carts/{cartId}")
+    public CartResponseDto getCartById(@RequestHeader("Authorization") String token, @PathVariable Long cartId) {
 
-        return storeManagerService.getCartWithProductDetails(cartId, token);
+        return storeManagerService.getCartById(cartId, token);
     }
 
-    @PutMapping("/cart/{cartId}/items/{itemId}")
-    public CartResponseDto updateItemQuantity(
+    @GetMapping("/carts")
+    public List<CartResponseDto> getAllCarts(@RequestHeader("Authorization") String token) {
+
+        return storeManagerService.getAllCarts(token);
+    }
+
+    @PutMapping("/carts/{cartId}")
+    public CartResponseDto updateCart(
             @RequestHeader("Authorization") String token,
             @PathVariable Long cartId,
-            @PathVariable Long itemId,
-            @RequestParam Long productId,
-            @RequestParam Integer cantidad) {
+            @RequestBody CartUpdateRequest request) {
 
-        return storeManagerService.updateItemQuantity(cartId, itemId, productId, cantidad, token);
+        return storeManagerService.updateCart(cartId, request, token);
     }
 
-    @DeleteMapping("/cart/{cartId}/items/{itemId}")
-    public CartResponseDto removeItemFromCart(
-            @RequestHeader("Authorization") String token, @PathVariable Long cartId, @PathVariable Long itemId) {
+    @DeleteMapping("/carts/{cartId}")
+    public void deleteCart(@RequestHeader("Authorization") String token, @PathVariable Long cartId) {
 
-        return storeManagerService.removeItemFromCart(cartId, itemId, token);
+        storeManagerService.deleteCart(cartId, token);
+    }
+
+    @GetMapping("/products/{productId}/validate")
+    public ProductResponseDto validateProduct(
+            @RequestHeader("Authorization") String token, @PathVariable Long productId) {
+
+        return storeManagerService.validateProduct(productId, token);
     }
 }
