@@ -1,53 +1,177 @@
-2. Store Manager Microservice
-Descripción
+# Store Manager Microservice (store-manager-api v1)
 
-El microservicio Store Manager funciona como orquestador entre otros microservicios.
-Su objetivo es coordinar operaciones relacionadas con carritos y productos, comunicándose con los microservicios de Carts y Product mediante WebClient.
+## Descripción
 
-Funcionalidades principales
-Crear carritos mediante el MS Carts.
-Listar carritos.
-Buscar carrito por ID.
-Actualizar carrito.
-Eliminar carrito.
-Validar productos consultando el MS Product.
-Verificar si un producto existe, está activo y tiene stock disponible.
-Enviar token JWT hacia los microservicios dependientes.
-Endpoints principales
-GET /api/v1/store/health
+Microservicio encargado de coordinar operaciones de tienda dentro del ecosistema de microservicios del proyecto FullStack 1.
 
-Verifica que Store Manager esté funcionando.
+Este servicio funciona como orquestador, comunicándose con el microservicio de productos y el microservicio de carritos mediante `WebClient`.
 
-POST /api/v1/store/carts
+Permite crear, consultar, actualizar y eliminar carritos, además de validar productos disponibles antes de utilizarlos en operaciones de tienda.
 
-Crea un carrito.
+---
 
-Ejemplo de body:
+## Tech Stack
 
+### Infraestructura
+
+* Java 25
+* Spring Boot 4.0.6
+* Docker
+* Docker Compose
+* MySQL
+* Maven
+
+### Dependencias principales
+
+1. Lombok
+2. Spring Web MVC
+3. Spring WebFlux
+4. Spring Security
+5. JWT
+6. Spring Data JPA
+7. Validation
+8. MySQL Connector
+9. Flyway
+10. SpringDoc OpenAPI / Swagger
+
+---
+
+## Responsabilidad del microservicio
+
+El Store Manager no administra directamente productos ni carritos en base de datos.
+
+Su función principal es coordinar operaciones entre microservicios externos.
+
+### Microservicios consumidos
+
+| Microservicio        | Función                                                     |
+| -------------------- | ----------------------------------------------------------- |
+| Product Microservice | Consulta y validación de productos                          |
+| Carts Microservice   | Creación, consulta, actualización y eliminación de carritos |
+
+---
+
+## API / Endpoints
+
+Base URL:
+
+```txt
+/api/v1/store
+```
+
+| Acción                | Método | Endpoint                                      |
+| --------------------- | ------ | --------------------------------------------- |
+| Verificar estado      | GET    | `/api/v1/store/health`                        |
+| Crear carrito         | POST   | `/api/v1/store/carts`                         |
+| Listar carritos       | GET    | `/api/v1/store/carts`                         |
+| Buscar carrito por ID | GET    | `/api/v1/store/carts/{cartId}`                |
+| Actualizar carrito    | PUT    | `/api/v1/store/carts/{cartId}`                |
+| Eliminar carrito      | DELETE | `/api/v1/store/carts/{cartId}`                |
+| Validar producto      | GET    | `/api/v1/store/products/{productId}/validate` |
+
+---
+
+## Ejemplos de uso
+
+### Crear carrito
+
+```http
+POST http://localhost:8010/api/v1/store/carts
+```
+
+Headers:
+
+```txt
+Authorization: Bearer TOKEN
+Content-Type: application/json
+```
+
+Body:
+
+```json
 {
   "customerId": 1
 }
-GET /api/v1/store/carts
+```
 
-Lista todos los carritos.
+---
 
-GET /api/v1/store/carts/{cartId}
+### Obtener carrito
 
-Busca un carrito por ID.
+```http
+GET http://localhost:8010/api/v1/store/carts/1
+```
 
-PUT /api/v1/store/carts/{cartId}
+---
 
-Actualiza el cliente asociado a un carrito.
+### Validar producto
 
-Ejemplo de body:
+```http
+GET http://localhost:8010/api/v1/store/products/1/validate
+```
 
-{
-  "customerId": 2
-}
-DELETE /api/v1/store/carts/{cartId}
+---
 
-Elimina un carrito.
+## Variables de entorno
 
-GET /api/v1/store/products/{productId}/validate
+```env
+SPRING_ENV=dev
+SPRING_APP_NAME=StoreManager
 
-Valida si un producto existe, está activo y tiene stock disponible.
+HOST_PORT=8010
+
+PRODUCTS_API_BASE_URL=http://localhost:8005/api/v1/products
+CARTS_API_BASE_URL=http://localhost:8002/api/v1/carts
+
+SPRING_JWT_SECRET=secret-key
+SPRING_JWT_ISSUER=login-service
+```
+
+---
+
+## Ejecución
+
+### Levantar contenedores
+
+```bash
+docker compose up -d
+```
+
+### Ejecutar aplicación
+
+```bash
+mvn spring-boot:run
+```
+
+---
+
+## Autenticación
+
+Los endpoints protegidos requieren JWT.
+
+Header:
+
+```txt
+Authorization: Bearer TOKEN
+```
+
+---
+
+## Arquitectura
+
+Store Manager actúa como orquestador entre:
+
+* Product Microservice
+* Carts Microservice
+
+La comunicación entre microservicios se realiza mediante `WebClient`.
+
+---
+
+## Equipo
+
+* Eduardo Bray
+* Rodrigo Callealta
+* Fernando Villalobos
+
+> DuocUC — FullStack 1 © 2026
