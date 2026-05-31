@@ -11,6 +11,7 @@ import cl.duoc.storeManager.dto.request.CartUpdateRequest;
 import cl.duoc.storeManager.dto.response.CartResponseDto;
 import cl.duoc.storeManager.dto.response.ProductResponseDto;
 import cl.duoc.storeManager.service.StoreManagerService;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,7 +37,7 @@ public class StoreManagerController {
 
     @PostMapping("/carts")
     public CartResponseDto createCart(
-            @RequestHeader("Authorization") String token, @RequestBody CartCreationRequest request) {
+            @RequestHeader("Authorization") String token, @Valid @RequestBody CartCreationRequest request) {
 
         return storeManagerService.createCart(request, token);
     }
@@ -57,7 +58,7 @@ public class StoreManagerController {
     public CartResponseDto updateCart(
             @RequestHeader("Authorization") String token,
             @PathVariable Long cartId,
-            @RequestBody CartUpdateRequest request) {
+            @Valid @RequestBody CartUpdateRequest request) {
 
         return storeManagerService.updateCart(cartId, request, token);
     }
