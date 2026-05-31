@@ -6,7 +6,10 @@
  */
 package cl.duoc.storeManager.client;
 
+import cl.duoc.storeManager.dto.request.CartCreationRequest;
+import cl.duoc.storeManager.dto.request.CartUpdateRequest;
 import cl.duoc.storeManager.dto.response.CartResponseDto;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
