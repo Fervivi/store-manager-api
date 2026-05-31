@@ -6,6 +6,7 @@
  */
 package cl.duoc.storeManager.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,9 +15,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class WebClientConfigProduct {
 
     @Bean
-    public WebClient webClientProduct() {
+    public WebClient webClientProduct(@Value("${app.service.products.base-url}") String baseUrl) {
         return WebClient.builder()
-                .baseUrl("http://localhost:8084")
+                .baseUrl(baseUrl)
                 .defaultHeader("Content-Type", "application/json")
                 .build();
     }

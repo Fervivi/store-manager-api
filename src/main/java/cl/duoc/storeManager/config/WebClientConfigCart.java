@@ -6,6 +6,7 @@
  */
 package cl.duoc.storeManager.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,9 +15,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class WebClientConfigCart {
 
     @Bean
-    public WebClient webClientCart() {
+    public WebClient webClientCart(@Value("${app.service.carts.base-url}") String baseUrl) {
         return WebClient.builder()
-                .baseUrl("http://localhost:8086")
+                .baseUrl(baseUrl)
                 .defaultHeader("Content-Type", "application/json")
                 .build();
     }
