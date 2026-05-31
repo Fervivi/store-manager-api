@@ -6,7 +6,7 @@
  */
 package cl.duoc.storeManager.dto.response;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,5 +17,7 @@ import lombok.NoArgsConstructor;
 public class CartResponseDto {
 
     private Long id;
-    private List<CartItemResponseDto> items;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private LocalDateTime deletedAt;
 }
