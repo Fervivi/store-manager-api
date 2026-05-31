@@ -19,7 +19,7 @@ public class ProductClient {
     public ProductResponseDto getProductById(Long productId, String token) {
         return webClientProduct
                 .get()
-                .uri("/api/v1/products/{id}", productId)
+                .uri("/{id}", productId)
                 .header("Authorization", token)
                 .retrieve()
                 .bodyToMono(ProductResponseDto.class)
