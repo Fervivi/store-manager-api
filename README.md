@@ -157,6 +157,30 @@ Authorization: Bearer TOKEN
 
 ---
 
+## Documentacion Swagger / OpenAPI
+
+En ambiente `dev`, la documentacion interactiva queda disponible en:
+
+```txt
+http://localhost:8010/swagger-ui/index.html
+```
+
+El contrato OpenAPI en formato JSON queda disponible en:
+
+```txt
+http://localhost:8010/v3/api-docs
+```
+
+Para probar endpoints protegidos desde Swagger UI, usar el boton **Authorize** e ingresar el JWT con formato:
+
+```txt
+Bearer TOKEN
+```
+
+En ambiente `prod`, Swagger y `/v3/api-docs` estan deshabilitados desde `application-prod.properties`.
+
+---
+
 ## Arquitectura
 
 Store Manager actúa como orquestador entre:
