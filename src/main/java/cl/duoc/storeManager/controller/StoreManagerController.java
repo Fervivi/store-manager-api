@@ -44,8 +44,7 @@ public class StoreManagerController {
     @GetMapping("/health")
     @Operation(
             summary = "Verifica el estado del microservicio",
-            description = "Endpoint publico para comprobar que Store Manager esta disponible.",
-            security = {})
+            description = "Endpoint publico para comprobar que Store Manager esta disponible.")
     @ApiResponse(responseCode = "200", description = "Microservicio disponible")
     public String health() {
         return "StoreManager funcionando correctamente";
@@ -66,7 +65,7 @@ public class StoreManagerController {
             responseCode = "400",
             description = "Solicitud invalida",
             content = @Content(schema = @Schema(implementation = String.class)))
-    @ApiResponse(responseCode = "401", description = "Token JWT ausente o invalido", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Token JWT ausente o invalido")
     @ApiResponse(
             responseCode = "500",
             description = "Error interno del microservicio",
@@ -89,7 +88,7 @@ public class StoreManagerController {
                     @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = CartResponseDto.class)))
-    @ApiResponse(responseCode = "401", description = "Token JWT ausente o invalido", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Token JWT ausente o invalido")
     @ApiResponse(
             responseCode = "404",
             description = "Carrito no encontrado",
@@ -116,7 +115,7 @@ public class StoreManagerController {
                     @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             array = @ArraySchema(schema = @Schema(implementation = CartResponseDto.class))))
-    @ApiResponse(responseCode = "401", description = "Token JWT ausente o invalido", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Token JWT ausente o invalido")
     @ApiResponse(
             responseCode = "500",
             description = "Error interno del microservicio",
@@ -139,7 +138,7 @@ public class StoreManagerController {
             responseCode = "400",
             description = "Solicitud invalida",
             content = @Content(schema = @Schema(implementation = String.class)))
-    @ApiResponse(responseCode = "401", description = "Token JWT ausente o invalido", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Token JWT ausente o invalido")
     @ApiResponse(
             responseCode = "404",
             description = "Carrito no encontrado",
@@ -160,8 +159,8 @@ public class StoreManagerController {
     @Operation(
             summary = "Elimina un carrito",
             description = "Solicita la eliminacion de un carrito al microservicio de carritos.")
-    @ApiResponse(responseCode = "200", description = "Carrito eliminado correctamente", content = @Content)
-    @ApiResponse(responseCode = "401", description = "Token JWT ausente o invalido", content = @Content)
+    @ApiResponse(responseCode = "200", description = "Carrito eliminado correctamente")
+    @ApiResponse(responseCode = "401", description = "Token JWT ausente o invalido")
     @ApiResponse(
             responseCode = "404",
             description = "Carrito no encontrado",
@@ -193,7 +192,7 @@ public class StoreManagerController {
             responseCode = "400",
             description = "Producto inactivo o sin stock",
             content = @Content(schema = @Schema(implementation = String.class)))
-    @ApiResponse(responseCode = "401", description = "Token JWT ausente o invalido", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Token JWT ausente o invalido")
     @ApiResponse(
             responseCode = "404",
             description = "Producto no encontrado",

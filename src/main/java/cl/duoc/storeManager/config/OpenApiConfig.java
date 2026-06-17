@@ -24,9 +24,9 @@ public class OpenApiConfig {
 
     @Bean
     public OpenAPI storeManagerOpenApi(
-            @Value("${springdoc.openapi.info.title:Store Manager Microservice API}") String title,
-            @Value("${springdoc.openapi.info.version:v0.1}") String version,
-            @Value("${springdoc.openapi.info.description:Microservice that coordinates store operations}")
+            @Value("${app.openapi.info.title:Store Manager Microservice API}") String title,
+            @Value("${app.openapi.info.version:v0.1}") String version,
+            @Value("${app.openapi.info.description:Microservice that coordinates store operations}")
                     String description) {
 
         return new OpenAPI()
