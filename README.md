@@ -56,18 +56,18 @@ Su función principal es coordinar operaciones entre microservicios externos.
 Base URL:
 
 ```txt
-/api/v1/store
+/api/v1/store-manager
 ```
 
 | Acción                | Método | Endpoint                                      |
 | --------------------- | ------ | --------------------------------------------- |
-| Verificar estado      | GET    | `/api/v1/store/health`                        |
-| Crear carrito         | POST   | `/api/v1/store/carts`                         |
-| Listar carritos       | GET    | `/api/v1/store/carts`                         |
-| Buscar carrito por ID | GET    | `/api/v1/store/carts/{cartId}`                |
-| Actualizar carrito    | PUT    | `/api/v1/store/carts/{cartId}`                |
-| Eliminar carrito      | DELETE | `/api/v1/store/carts/{cartId}`                |
-| Validar producto      | GET    | `/api/v1/store/products/{productId}/validate` |
+| Verificar estado      | GET    | `/api/v1/store-manager/health`                        |
+| Crear carrito         | POST   | `/api/v1/store-manager/carts`                         |
+| Listar carritos       | GET    | `/api/v1/store-manager/carts`                         |
+| Buscar carrito por ID | GET    | `/api/v1/store-manager/carts/{cartId}`                |
+| Actualizar carrito    | PUT    | `/api/v1/store-manager/carts/{cartId}`                |
+| Eliminar carrito      | DELETE | `/api/v1/store-manager/carts/{cartId}`                |
+| Validar producto      | GET    | `/api/v1/store-manager/products/{productId}/validate` |
 
 ---
 
@@ -76,7 +76,7 @@ Base URL:
 ### Crear carrito
 
 ```http
-POST http://localhost:8010/api/v1/store/carts
+POST http://localhost:8010/api/v1/store-manager/carts
 ```
 
 Headers:
@@ -99,7 +99,7 @@ Body:
 ### Obtener carrito
 
 ```http
-GET http://localhost:8010/api/v1/store/carts/1
+GET http://localhost:8010/api/v1/store-manager/carts/1
 ```
 
 ---
@@ -107,7 +107,7 @@ GET http://localhost:8010/api/v1/store/carts/1
 ### Validar producto
 
 ```http
-GET http://localhost:8010/api/v1/store/products/1/validate
+GET http://localhost:8010/api/v1/store-manager/products/1/validate
 ```
 
 ---

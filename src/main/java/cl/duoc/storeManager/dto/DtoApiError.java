@@ -32,7 +32,7 @@ public class DtoApiError {
     @Schema(description = "Mensaje descriptivo del error", example = "Producto no encontrado con ID: 1")
     private String message;
 
-    @Schema(description = "Ruta donde ocurrio el error", example = "/api/v1/store/products/1/validate")
+    @Schema(description = "Ruta donde ocurrio el error", example = "/api/v1/store-manager/products/1/validate")
     private String path;
 
     @Schema(description = "Clase de excepcion asociada", example = "ResourceNotFoundException")
