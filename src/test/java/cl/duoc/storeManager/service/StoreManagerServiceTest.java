@@ -42,15 +42,12 @@ class StoreManagerServiceTest {
 
     @Test
     void createCart_debeDelegarCreacionAlCartClient() {
-        // Given
         CartCreationRequest request = new CartCreationRequest(10L);
         CartResponseDto expected = crearCarrito();
         when(cartClient.createCart(request, TOKEN)).thenReturn(expected);
 
-        // When
         CartResponseDto result = storeManagerService.createCart(request, TOKEN);
 
-        // Then
         assertThat(result).isSameAs(expected);
         verify(cartClient).createCart(request, TOKEN);
     }
