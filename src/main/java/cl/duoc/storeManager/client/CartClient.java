@@ -21,10 +21,12 @@ public class CartClient {
 
     private final WebClient webClientCart;
 
+    private static final String prefix = "/api/v1/carts";
+
     public CartResponseDto createCart(CartCreationRequest request, String token) {
         return webClientCart
                 .post()
-                .uri("")
+                .uri(prefix)
                 .header("Authorization", token)
                 .bodyValue(request)
                 .retrieve()
@@ -35,7 +37,7 @@ public class CartClient {
     public CartResponseDto getCartById(Long cartId, String token) {
         return webClientCart
                 .get()
-                .uri("/{id}", cartId)
+                .uri(prefix + "/{id}", cartId)
                 .header("Authorization", token)
                 .retrieve()
                 .bodyToMono(CartResponseDto.class)
@@ -45,7 +47,7 @@ public class CartClient {
     public List<CartResponseDto> getAllCarts(String token) {
         return webClientCart
                 .get()
-                .uri("")
+                .uri(prefix)
                 .header("Authorization", token)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<CartResponseDto>>() {})
@@ -55,7 +57,7 @@ public class CartClient {
     public CartResponseDto updateCart(Long cartId, CartUpdateRequest request, String token) {
         return webClientCart
                 .put()
-                .uri("/{id}", cartId)
+                .uri(prefix + "/{id}", cartId)
                 .header("Authorization", token)
                 .bodyValue(request)
                 .retrieve()
@@ -66,7 +68,7 @@ public class CartClient {
     public void deleteCart(Long cartId, String token) {
         webClientCart
                 .delete()
-                .uri("/{id}", cartId)
+                .uri(prefix + "/{id}", cartId)
                 .header("Authorization", token)
                 .retrieve()
                 .toBodilessEntity()
