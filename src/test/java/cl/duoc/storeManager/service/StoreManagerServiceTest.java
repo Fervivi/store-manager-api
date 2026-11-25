@@ -33,7 +33,7 @@ class StoreManagerServiceTest {
 
     @Test
     void validateProduct_debeRetornarProductoCuandoEstaActivoYConStock() {
-        ProductResponseDto expected = crearProducto(5, true);
+        ProductResponseDto expected = crearProducto(5, "Activo");
         when(productClient.getProductById(1L, TOKEN)).thenReturn(expected);
 
         ProductResponseDto result = storeManagerService.validateProduct(1L, TOKEN);
@@ -52,15 +52,33 @@ class StoreManagerServiceTest {
 
     @Test
     void validateProduct_debeLanzarExcepcionCuandoProductoNoTieneStock() {
-        when(productClient.getProductById(1L, TOKEN)).thenReturn(crearProducto(0, true));
+        when(productClient.getProductById(1L, TOKEN)).thenReturn(crearProducto(0, "Activo"));
 
         assertThatThrownBy(() -> storeManagerService.validateProduct(1L, TOKEN))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("El producto no tiene stock disponible");
     }
 
-    private ProductResponseDto crearProducto(Integer stock, Boolean activo) {
+    @Test
+    void validateProduct_debeLanzarExcepcionCuandoProductoEstaInactivo() {
+        when(productClient.getProductById(1L, TOKEN)).thenReturn(crearProducto(5, "Inactivo"));
+
+        assertThatThrownBy(() -> storeManagerService.validateProduct(1L, TOKEN))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("El producto no está disponible (estado: Inactivo)");
+    }
+
+    @Test
+    void validateProduct_debeLanzarExcepcionCuandoProductoEstaEnPreparacion() {
+        when(productClient.getProductById(1L, TOKEN)).thenReturn(crearProducto(5, "Preparando"));
+
+        assertThatThrownBy(() -> storeManagerService.validateProduct(1L, TOKEN))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("El producto no está disponible (estado: Preparando)");
+    }
+
+    private ProductResponseDto crearProducto(Integer stock, String estado) {
         return new ProductResponseDto(
-                1L, "Teclado", "Teclado mecanico", new BigDecimal("29990"), stock, "Perifericos", activo);
+                1L, "Teclado", "Teclado mecanico", new BigDecimal("29990"), stock, "Perifericos", estado);
     }
 }

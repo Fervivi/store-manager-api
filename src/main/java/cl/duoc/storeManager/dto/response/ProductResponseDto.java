@@ -36,6 +36,6 @@ public class ProductResponseDto {
     @Schema(description = "Categoria del producto", example = "Perifericos")
     private String categoria;
 
-    @Schema(description = "Indica si el producto esta activo", example = "true")
-    private Boolean activo;
+    @Schema(description = "Estado del producto", example = "Activo")
+    private String estado;
 }

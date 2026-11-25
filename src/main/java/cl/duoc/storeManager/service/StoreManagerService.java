@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class StoreManagerService {
 
+    private static final String ACTIVE_STATE = "Activo";
+
     private final ProductClient productClient;
 
     public ProductResponseDto validateProduct(Long productId, String token) {
@@ -25,8 +27,8 @@ public class StoreManagerService {
             throw new ResourceNotFoundException("Producto no encontrado con ID: " + productId);
         }
 
-        if (!Boolean.TRUE.equals(product.getActivo())) {
-            throw new IllegalArgumentException("El producto no está activo");
+        if (!ACTIVE_STATE.equalsIgnoreCase(product.getEstado())) {
+            throw new IllegalArgumentException("El producto no está disponible (estado: " + product.getEstado() + ")");
         }
 
         if (product.getStock() == null || product.getStock() <= 0) {
