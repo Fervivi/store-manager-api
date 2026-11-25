@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 
 import cl.duoc.storeManager.client.ProductClient;
 import cl.duoc.storeManager.dto.response.ProductResponseDto;
+import cl.duoc.storeManager.exception.ProductNotAvailableException;
 import cl.duoc.storeManager.exception.ResourceNotFoundException;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
@@ -55,7 +56,7 @@ class StoreManagerServiceTest {
         when(productClient.getProductById(1L, TOKEN)).thenReturn(crearProducto(0, "Activo"));
 
         assertThatThrownBy(() -> storeManagerService.validateProduct(1L, TOKEN))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(ProductNotAvailableException.class)
                 .hasMessage("El producto no tiene stock disponible");
     }
 
@@ -64,7 +65,7 @@ class StoreManagerServiceTest {
         when(productClient.getProductById(1L, TOKEN)).thenReturn(crearProducto(5, "Inactivo"));
 
         assertThatThrownBy(() -> storeManagerService.validateProduct(1L, TOKEN))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(ProductNotAvailableException.class)
                 .hasMessage("El producto no está disponible (estado: Inactivo)");
     }
 
@@ -73,7 +74,7 @@ class StoreManagerServiceTest {
         when(productClient.getProductById(1L, TOKEN)).thenReturn(crearProducto(5, "Preparando"));
 
         assertThatThrownBy(() -> storeManagerService.validateProduct(1L, TOKEN))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(ProductNotAvailableException.class)
                 .hasMessage("El producto no está disponible (estado: Preparando)");
     }
 

@@ -53,8 +53,8 @@ public class StoreManagerController {
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ProductResponseDto.class)))
     @ApiResponse(
-            responseCode = "400",
-            description = "Producto inactivo o sin stock",
+            responseCode = "409",
+            description = "Producto no disponible (estado distinto de Activo) o sin stock",
             content = @Content(schema = @Schema(implementation = String.class)))
     @ApiResponse(responseCode = "401", description = "Token JWT ausente o invalido")
     @ApiResponse(
