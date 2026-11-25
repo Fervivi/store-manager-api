@@ -8,6 +8,7 @@ package cl.duoc.storeManager.service;
 
 import cl.duoc.storeManager.client.ProductClient;
 import cl.duoc.storeManager.dto.response.ProductResponseDto;
+import cl.duoc.storeManager.exception.ProductNotAvailableException;
 import cl.duoc.storeManager.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class StoreManagerService {
+
+    private static final String ACTIVE_STATE = "Activo";
 
     private final ProductClient productClient;
 
@@ -25,12 +28,13 @@ public class StoreManagerService {
             throw new ResourceNotFoundException("Producto no encontrado con ID: " + productId);
         }
 
-        if (!Boolean.TRUE.equals(product.getActivo())) {
-            throw new IllegalArgumentException("El producto no está activo");
+        if (!ACTIVE_STATE.equalsIgnoreCase(product.getEstado())) {
+            throw new ProductNotAvailableException(
+                    "El producto no está disponible (estado: " + product.getEstado() + ")");
         }
 
         if (product.getStock() == null || product.getStock() <= 0) {
-            throw new IllegalArgumentException("El producto no tiene stock disponible");
+            throw new ProductNotAvailableException("El producto no tiene stock disponible");
         }
 
         return product;
